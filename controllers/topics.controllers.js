@@ -5,8 +5,8 @@ exports.incorrectPathNames = (req, res, next) => {
 };
 
 exports.retrieveTopics = (req, res, next) => {
-    fetchTopicData().then((topicsArray) => {
-        res.status(200).send({ topicsArray })
+    fetchTopicData().then((topics) => {
+        res.status(200).send({ topics })
     })
     .catch((err) => {
         next(err)
