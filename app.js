@@ -1,15 +1,16 @@
-const express = require("express")
-const { retrieveTopics } = require("./controllers/topics.controllers")
+const express = require("express");
+const {
+  retrieveTopics,
+  incorrectPathNames,
+} = require("./controllers/topics.controllers");
 
-const app = express()
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-app.get("/api/topics", retrieveTopics)
+app.get("/api/topics", retrieveTopics);
+app.all("*", incorrectPathNames);
 
-app.use((req, res, next) => {
-        res.status(404).send({ msg: "Invalid endpoint" })
 
-})
 
-module.exports = app
+module.exports = app;
