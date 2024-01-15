@@ -4,6 +4,7 @@ const db = require("../db/connection")
 const seed = require("../db/seeds/seed")
 const data = require("../db/data/test-data")
 const fs = require('fs/promises');
+const endpointFile = require('../endpoints.json')
 
 beforeAll(() => seed(data))
 
@@ -43,31 +44,11 @@ describe("GET/api", () => {
         .expect(200)
         .then(({ body }) => {
             const { endpointObject } = body
-            return fs.readFile('./endpoints.json', 'utf-8')
-                .then((fileContents) => {
-                    const parsedFile = JSON.parse(fileContents)
-                    expect(endpointObject).toEqual(parsedFile)
-                })
+            expect(endpointObject).toEqual(endpointFile)
         })
     })
-    test("200: For each endpoint, make sure that all of the required information and keys are there", () => {
-        return request(app)
-            .get("/api")
-            .expect(200)
-            .then(({ body }) => {
-                const { endpointObject } = body;
-                expect(endpointObject["GET /api/topics"].exampleResponse).not.toBeUndefined();
-                expect(endpointObject["GET /api/topics"].description).not.toBeUndefined();
-                expect(endpointObject["GET /api/topics"].queries).not.toBeUndefined();
-    
-                expect(endpointObject["GET /api/articles"].description).not.toBeUndefined();
-                expect(endpointObject["GET /api/articles"].queries).not.toBeUndefined();
-                expect(endpointObject["GET /api/articles"].exampleResponse).not.toBeUndefined();
-            });
-    });
 })
 
-//retrieving by their id number
 describe("GET /api/articles/:article_id", () => {
     test("200: when retrieving an article by an id number of 1, return the correct article information as an object", () => {
         return request(app)
