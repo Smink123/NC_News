@@ -3,6 +3,7 @@ const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.con
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
 const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment, patchArticleById } = require("./controllers/articles.controllers")
 const { deleteCommentById } = require("./controllers/comments.controllers")
+const { retrieveUsers } = require("./controllers/users.controllers")
 
 const app = express();
 
@@ -23,6 +24,9 @@ app.post("/api/articles/:article_id/comments", postNewComment)
 app.patch("/api/articles/:article_id", patchArticleById)
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
+
+app.get("/api/users", retrieveUsers);
+
 
 app.all("*", incorrectPathNames);
 
