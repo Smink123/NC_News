@@ -92,7 +92,7 @@ describe("GET /api/articles/:article_id", () => {
         .get("/api/articles/65")
         .expect(404)
         .then(({ body }) => {
-            expect(body.msg).toBe('Invalid get request: ID not found');
+            expect(body.msg).toBe('ID not found');
         })
     })
     test("400: when given an article_id value which is not a number, return a bad request error message", () => {
@@ -112,6 +112,8 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then(({body}) => {
             const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("created_at", { descending: true })
             articles.forEach(article => {
                 expect(typeof article.author).toBe('string')
                 expect(typeof article.title).toBe('string')
@@ -122,7 +124,6 @@ describe('GET /api/articles', () => {
                 expect(typeof article.article_img_url).toBe('string')
                 expect(typeof article.comment_count).toBe('number')
             })
-            expect(articles).toBeSortedBy("created_at", { descending: true })
         })
     })
 })
