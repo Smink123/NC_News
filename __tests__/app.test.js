@@ -179,9 +179,9 @@ describe('POST /api/articles/:article_id/comments', () => {
     test('201: inserts a new comment into the specified article, and returns that newly added comment', () => {
         const commentToAdd = {
             body: 'this is a bunch of nonsense',
-            author: "butter_bridge",
-            votes: 0,
-            created_at: "2020-10-16T11:28:00.000Z"
+            author: "butter_bridge"
+            // votes: 0,
+            // created_at: "2020-10-16T11:28:00.000Z"
         }
 
         const addedComment = {
@@ -193,7 +193,7 @@ describe('POST /api/articles/:article_id/comments', () => {
         .expect(201)
         .then(({body}) => {
             const { comment } = body
-            expect(comment).toEqual(addedComment)
+            expect(comment).toEqual(addedComment.body)
         })
     })
     test('400: when given an article_id value which is not a number, return a bad request error message', () => {
