@@ -46,3 +46,14 @@ exports.fetchCommentByArticleId = (article_id) => {
     return comments.rows
   })
 }
+
+exports.postCommentToArticle = (article_id, body) => {
+  const commentValues = [body.body, body.author, article_id, body.votes, body.created_at]
+  return db.query(`INSERT INTO comments
+  (body, author, article_id, votes, created_at)
+  VALUES ($1, $2, $3, $4, $5)
+  RETURNING body`, commentValues).then((comment) => {
+    return comment.rows[0]
+  })
+
+}
