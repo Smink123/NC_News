@@ -306,6 +306,16 @@ describe('PATCH /api/articles/:article_id', () => {
             expect(body.msg).toBe("Bad request")
         })
     })
+    test("400: when given an invalid key that is not inc_votes, return a bad request message", () => {
+        const newInfo = { update: 67 }
+        return request(app)
+        .patch("/api/articles/7")
+        .send(newInfo)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request")
+        })
+    })
 })
 
 describe("DELETE /api/comments/:comment_id", () => {
