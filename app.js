@@ -1,7 +1,7 @@
 const express = require("express");
 const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-const { retrieveArticleById } = require("./controllers/articles.controllers")
+const { retrieveArticleById, retrieveAllArticles } = require("./controllers/articles.controllers")
 
 const app = express();
 
@@ -12,6 +12,8 @@ app.get("/api/topics", retrieveTopics);
 app.get("/api", retrieveAllPathInfo)
 
 app.get("/api/articles/:article_id", retrieveArticleById)
+
+app.get("/api/articles", retrieveAllArticles)
 
 app.all("*", incorrectPathNames);
 
@@ -25,7 +27,6 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
     if(err.code === '22P02'){
-        //because error messages for PSQL ERRORS are not defined in the models, we do it here:
         res.status(400).send(({msg: "Bad request"}))
     }
 })
