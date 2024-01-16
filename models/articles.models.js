@@ -48,12 +48,12 @@ exports.fetchCommentByArticleId = (article_id) => {
 }
 
 exports.postCommentToArticle = (article_id, body) => {
-  const commentValues = [body.body, body.author, article_id, body.votes, body.created_at]
+  const commentValues = [body.body, body.author, article_id, 0, "2020-07-18T11:23:00.000Z"]
   return db.query(`INSERT INTO comments
   (body, author, article_id, votes, created_at)
   VALUES ($1, $2, $3, $4, $5)
-  RETURNING body`, commentValues).then((comment) => {
-    return comment.rows[0]
+  RETURNING *`, commentValues).then((comment) => {
+    return comment.rows[0].body
   })
 
 }
