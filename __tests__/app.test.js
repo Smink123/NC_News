@@ -126,3 +126,50 @@ describe('GET /api/articles', () => {
         })
     })
 })
+describe('GET /api/articles/:article_id/comments', () => {
+    test('200: returns an array of comments which feature in a specific article, ordered by the most recently made comment', () => {
+        return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body;
+
+            const expectedOutput = [
+                {
+                    comment_id: 11,
+                    votes: 0,
+                    created_at: "2020-09-19T23:10:00.000Z",
+                    author: "icellusedkars",
+                    body: "Ambidextrous marsupial",
+                    article_id: 3
+                },
+                {
+                    comment_id: 10,
+                    votes: 0,
+                    created_at: "2020-06-20T07:24:00.000Z",
+                    author: "icellusedkars",
+                    body: "git push origin master",
+                    article_id: 3
+                }
+            ];
+            expect(comments).toEqual(expectedOutput)
+            expect(comments).toBeSortedBy("created_at", { descending: true })
+        });
+    });
+    test("404: when given an article_id number which is not in the database, return an error message", () => {
+        return request(app)
+        .get("/api/articles/87/comments")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('ID not found');
+        })
+    })
+    test("400: when given an article_id value which is not a number, return a bad request error message", () => {
+        return request(app)
+        .get("/api/articles/twenty_seven/comments")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
+        })
+    })
+});

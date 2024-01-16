@@ -1,7 +1,7 @@
 const express = require("express");
 const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-const { retrieveArticleById, retrieveAllArticles } = require("./controllers/articles.controllers")
+const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId } = require("./controllers/articles.controllers")
 
 const app = express();
 
@@ -14,6 +14,8 @@ app.get("/api", retrieveAllPathInfo)
 app.get("/api/articles/:article_id", retrieveArticleById)
 
 app.get("/api/articles", retrieveAllArticles)
+
+app.get("/api/articles/:article_id/comments", retrieveCommentsByArticleId)
 
 app.all("*", incorrectPathNames);
 
