@@ -228,5 +228,82 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-//create sql statement to insert something new into comments section
-//check that shows up in table
+describe('PATCH /api/articles/:article_id', () => {
+    test("200: when given a patch request to update the votes with a positive number for a specific article, update the article with the new value", () => {
+        const newInfo = { inc_votes: 50 }
+
+        const updatedArticle = {
+            article_id: 7,
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            author: "icellusedkars",
+            body: "I was hungry.",
+            created_at: "2020-01-07T14:08:00.000Z",
+            title: 'Z',
+            topic: "mitch",
+            votes: 50
+        }
+
+        return request(app)
+        .patch("/api/articles/7")
+        .send(newInfo)
+        .expect(200)
+        .then(({ body }) => {
+            const { article } = body
+            expect(article).toEqual(updatedArticle)
+        })
+    })
+    test("200: when given a patch request to update the votes with a negative number for a specific article, update the article with the new value", () => {
+        const newInfo = { inc_votes: -40 }
+
+        const updatedArticle = {
+            article_id: 4,
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            author: "rogersop",
+            body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+            created_at: "2020-05-06T01:14:00.000Z",
+            title: 'Student SUES Mitch!',
+            topic: "mitch",
+            votes: -40
+        }
+
+        return request(app)
+        .patch("/api/articles/4")
+        .send(newInfo)
+        .expect(200)
+        .then(({ body }) => {
+            const { article } = body
+            expect(article).toEqual(updatedArticle)
+        })
+    })
+    test("404: when given an article id which is not included in the database, return an id not found message", () => {
+        const newInfo = { inc_votes: 100 }
+
+        return request(app)
+        .patch("/api/articles/687")
+        .send(newInfo)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("ID not found")
+        })
+    })
+    test("400: when given an invalid article_id that is not a number, return a bad request message", () => {
+        const newInfo = { inc_votes: 100 }
+        return request(app)
+        .patch("/api/articles/fifty")
+        .send(newInfo)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request")
+        })
+    })
+    test("400: when given an invalid inc_votes value which is not a number, return a bad request message", () => {
+        const newInfo = { inc_votes: 'one hundred' }
+        return request(app)
+        .patch("/api/articles/7")
+        .send(newInfo)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request")
+        })
+    })
+})

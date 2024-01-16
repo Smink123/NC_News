@@ -1,7 +1,7 @@
 const express = require("express");
 const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment } = require("./controllers/articles.controllers")
+const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment, patchArticleById } = require("./controllers/articles.controllers")
 
 const app = express();
 
@@ -18,6 +18,8 @@ app.get("/api/articles", retrieveAllArticles)
 app.get("/api/articles/:article_id/comments", retrieveCommentsByArticleId)
 
 app.post("/api/articles/:article_id/comments", postNewComment)
+
+app.patch("/api/articles/:article_id", patchArticleById)
 
 app.all("*", incorrectPathNames);
 
@@ -49,8 +51,6 @@ app.use((err, req, res, next) => {
     console.log(err)
     res.status(500).send(({msg: "Internal error"}))
 })
-
-23503
 
 
 
