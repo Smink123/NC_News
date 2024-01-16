@@ -174,3 +174,59 @@ describe('GET /api/articles/:article_id/comments', () => {
         })
     })
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('201: inserts a new comment into the specified article, and returns that newly added comment', () => {
+        const commentToAdd = {
+            body: 'this is a bunch of nonsense',
+            author: "butter_bridge",
+            votes: 0,
+            created_at: "2020-10-16T11:28:00.000Z"
+        }
+
+        const addedComment = {
+            body: 'this is a bunch of nonsense'
+        }
+        return request(app)
+        .post('/api/articles/4/comments') 
+        .send(commentToAdd) 
+        .expect(201)
+        .then(({body}) => {
+            const { comment } = body
+            expect(comment).toEqual(addedComment)
+        })
+    })
+    test('400: when given an article_id value which is not a number, return a bad request error message', () => {
+        const commentToAdd = {
+            body: 'this is a bunch of nonsense',
+            author: "butter_bridge",
+            votes: 0,
+            created_at: "2020-10-16T11:28:00.000Z"
+        }
+        return request(app)
+        .post('/api/articles/four/comments') 
+        .send(commentToAdd) 
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
+        })
+    })
+    test('404: when given an article_id which does not exist in the database, return an ID does not exist message', () => {
+        const commentToAdd = {
+            body: 'this is a bunch of nonsense',
+            author: "butter_bridge",
+            votes: 0,
+            created_at: "2020-10-16T11:28:00.000Z"
+        }
+        return request(app)
+        .post('/api/articles/876/comments') 
+        .send(commentToAdd) 
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('ID not found');
+        })
+    })
+})
+
+//create sql statement to insert something new into comments section
+//check that shows up in table
