@@ -82,5 +82,10 @@
       "topic": "mitch",
       "votes": 50
   }
-  }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment from the database by its comment_id",
+    "queries": [],
+    "exampleResponse": {}
+}
 }

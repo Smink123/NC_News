@@ -307,3 +307,30 @@ describe('PATCH /api/articles/:article_id', () => {
         })
     })
 })
+
+describe("DELETE /api/comments/:comment_id", () => {
+    test('204: delete a comment by its comment id from the database', () => {
+        return request(app)
+        .delete("/api/comments/5")
+        .expect(204)
+        .then(({ body }) => {
+            expect(body).toEqual({})
+        })
+    })
+    test("404: when given a comment_id as a number which is not included in the database, return an error message", () => {
+        return request(app)
+        .delete("/api/comments/598")
+        .expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe("ID not found")
+        })
+      })
+      test("400: when given an invalid id that is not a number, send back a bad request message", () => {
+        return request(app)
+        .delete("/api/comments/one")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request")
+        })
+      })
+})
