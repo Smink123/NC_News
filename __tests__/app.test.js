@@ -116,7 +116,16 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(body.msg).toBe('Bad request');
         })
     })
-});
+    test('200: If the aticle_id exists but there are no comments, respond with an empty array', () => {
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+            const { comments } = body;
+            expect(comments).toEqual([]);
+        })
+    })
+})
 
 describe('POST /api/articles/:article_id/comments', () => {
     test('201: inserts a new comment into the specified article, and returns that newly added comment', () => {
