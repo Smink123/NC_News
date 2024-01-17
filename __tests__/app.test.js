@@ -361,3 +361,25 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe('GET /api/articles (topic query)', () => {
+    test("200: Will return a filtered set of results based on the particular topic query given", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body
+            articles.forEach((article) => {
+                expect(article.topic).toBe('mitch')
+            })
+        })
+    })
+    test("400: returns a bad request error message if the topic query does not match any of the topics in the database", () => {
+        return request(app)
+        .get("/api/articles?topic=weather")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad request: query does not exist')
+    })
+})
+})
