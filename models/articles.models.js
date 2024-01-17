@@ -13,25 +13,43 @@ exports.fetchArticleById = (article_id) => {
       return article.rows[0];
     });
 };
+exports.fetchAllArticles = (topic) => {
+  // const validTopicQueries = ['mitch', 'cats', 'paper'];
+  // if (!validTopicQueries.includes(topic)) {
+  //   return Promise.reject({ status: 400, msg: 'Bad request' });
+  // }
 
-exports.fetchAllArticles = () => {
-  return db.query(`SELECT
-                  articles.article_id,
-                  articles.author,
-                  articles.title,
-                  articles.topic,
-                  articles.created_at,
-                  articles.article_img_url,
-                  articles.votes,
-                  COUNT(comments.article_id)::INTEGER AS comment_count
-                  FROM articles
-                  FULL JOIN
-                  comments ON articles.article_id = comments.article_id
-                  GROUP BY articles.article_id
-                  ORDER BY articles.created_at DESC`).then((articles) => {
-                  return articles.rows;
-               });
-}
+  let queryString = `SELECT
+  articles.article_id,
+  articles.author,
+  articles.title,
+  articles.topic,
+  articles.created_at,
+  articles.article_img_url,
+  articles.votes,
+  COUNT(comments.article_id)::INTEGER AS comment_count
+  FROM articles
+  FULL JOIN
+  comments ON articles.article_id = comments.article_id`;
+
+  const queryParams = [];
+
+  if (topic) {
+    queryString += ` WHERE articles.topic = $1`;
+    queryParams.push(topic);
+  }
+
+  queryString += ` GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC`;
+
+  return db.query(queryString, queryParams).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 400, msg: 'Bad request: query does not exist' })
+    }
+    return result.rows;
+  });
+};
+
 
 exports.fetchCommentByArticleId = (article_id) => {
   return db.query(`SELECT * FROM comments 
