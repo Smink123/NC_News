@@ -1,4 +1,7 @@
 const { fetchArticleById, fetchAllArticles, fetchCommentByArticleId, postCommentToArticle, editArticleById } = require("../models/articles.models")
+const { checkArticlesExists } = require("../db/check-article-exists")
+
+
 
 exports.retrieveArticleById = (req, res, next) => {
     const { article_id } = req.params
@@ -22,7 +25,17 @@ exports.retrieveAllArticles = (req, res, next) => {
 
 exports.retrieveCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params
-    fetchCommentByArticleId(article_id).then((comments) => {
+
+    const fetchQuery = fetchCommentByArticleId(article_id)
+    const queries = [fetchQuery]
+    
+    if (article_id) {
+        const articleExistsQuery = checkArticlesExists(article_id)
+        queries.push(articleExistsQuery)
+    }
+
+    Promise.all(queries).then((response) => {
+        const comments = response[0]
         res.status(200).send({ comments })
     })
     .catch((err) => {
