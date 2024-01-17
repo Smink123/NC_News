@@ -48,63 +48,6 @@ describe("GET/api", () => {
     })
 })
 
-describe("GET /api/articles/:article_id", () => {
-    test("200: when retrieving an article by an id number of 1, return the correct article information as an object", () => {
-        return request(app)
-        .get("/api/articles/1")
-        .expect(200)
-        .then(({ body }) => {
-            const { article } = body;
-            const expectedArticle = {
-                article_id: 1,
-                title: "Living in the shadow of a great man",
-                topic: "mitch",
-                author: "butter_bridge",
-                body: "I find this existence challenging",
-                created_at: "2020-07-09T20:11:00.000Z",
-                votes: 100,
-                article_img_url:
-                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-              }
-            expect(article).toEqual(expectedArticle)
-        })
-    })
-    test("200: when retrieving an article by a valid id number (but this time more large), return the correct article information as an object", () => {
-        return request(app)
-        .get("/api/articles/12")
-        .expect(200)
-        .then(({ body }) => {
-            const { article } = body;
-            const expectedArticle = {
-                article_id: 12,
-                title: "Moustache",
-                topic: "mitch",
-                author: "butter_bridge",
-                body: "Have you seen the size of that thing?",
-                created_at: "2020-10-11T11:24:00.000Z",
-                votes: 0,
-                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}
-            expect(article).toEqual(expectedArticle)
-        })
-    })
-    test("404: when given an article_id number which is not in the database, return an error message", () => {
-        return request(app)
-        .get("/api/articles/65")
-        .expect(404)
-        .then(({ body }) => {
-            expect(body.msg).toBe('ID not found');
-        })
-    })
-    test("400: when given an article_id value which is not a number, return a bad request error message", () => {
-        return request(app)
-        .get("/api/articles/twenty")
-        .expect(400)
-        .then(({ body }) => {
-            expect(body.msg).toBe('Bad request');
-        })
-    })
-})
-
 describe('GET /api/articles', () => {
     test('200: returns an array of all article objects in descending order by date, and must include all of the relevant keys', () => {
         return request(app)
@@ -180,8 +123,6 @@ describe('POST /api/articles/:article_id/comments', () => {
         const commentToAdd = {
             body: 'this is a bunch of nonsense',
             author: "butter_bridge"
-            // votes: 0,
-            // created_at: "2020-10-16T11:28:00.000Z"
         }
 
         const addedComment = {
@@ -382,4 +323,45 @@ describe('GET /api/articles (topic query)', () => {
             expect(body.msg).toBe('Bad request: query does not exist')
     })
 })
+})
+
+
+describe("GET /api/articles/:article_id", () => {
+    test("200: when retrieving an article by an id number of 1, return the correct article information as an object", () => {
+        return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+            const { article } = body;
+            const expectedArticle = {
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: "2020-07-09T20:11:00.000Z",
+                votes: 100,
+                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                comment_count: 10
+              }
+            expect(article).toEqual(expectedArticle)
+            expect(typeof article.comment_count).toBe('number')
+        })
+    })
+    test("404: when given an article_id number which is not in the database, return an error message", () => {
+        return request(app)
+        .get("/api/articles/65")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('ID not found');
+        })
+    })
+    test("400: when given an article_id value which is not a number, return a bad request error message", () => {
+        return request(app)
+        .get("/api/articles/twenty")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
+        })
+    })
 })
