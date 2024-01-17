@@ -324,16 +324,26 @@ describe('GET /api/articles (topic query)', () => {
             })
         })
     })
-    test("400: returns a bad request error message if the topic query does not match any of the topics in the database", () => {
+    test("404: returns a bad request error message if the topic query does not match any of the topics in the database", () => {
         return request(app)
         .get("/api/articles?topic=weather")
-        .expect(400)
+        .expect(404)
         .then(({body}) => {
             expect(body.msg).toBe('Bad request: query does not exist')
     })
 })
+/////////
+test("200: If a topic exists but isn't mentioned in any articles, return an empty array", () => {
+    return request(app)
+    .get("/api/articles?topic=paper")
+    .expect(200)
+    .then(({body}) => {
+        const { articles } = body;
+        expect(articles).toEqual([]);
+        })
 })
-
+})
+///////////
 
 describe("GET /api/articles/:article_id", () => {
     test("200: when retrieving an article by an id number of 1, return the correct article information as an object", () => {

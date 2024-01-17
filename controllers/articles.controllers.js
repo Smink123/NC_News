@@ -1,5 +1,7 @@
 const { fetchArticleById, fetchAllArticles, fetchCommentByArticleId, postCommentToArticle, editArticleById } = require("../models/articles.models")
 const { checkArticlesExists } = require("../db/check-article-exists")
+const { checkTopicExists } = require("../db/check-topic-exists")
+
 
 
 
@@ -15,8 +17,17 @@ exports.retrieveArticleById = (req, res, next) => {
 
 exports.retrieveAllArticles = (req, res, next) => {
     const { topic } = req.query
-    fetchAllArticles(topic).then((articles) => {
-        res.status(200).send({articles})
+
+    const fetchQuery = fetchAllArticles(topic)
+    const queries = [fetchQuery]
+
+    if (topic) {
+        const topicExistsQuery = checkTopicExists(topic)
+        queries.push(topicExistsQuery)
+    }
+    Promise.all(queries).then((response) => {
+        const articles = response[0]
+        res.status(200).send({ articles })
     })
     .catch((err) => {
         next(err)

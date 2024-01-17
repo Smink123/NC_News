@@ -53,9 +53,7 @@ exports.fetchAllArticles = (topic) => {
   ORDER BY articles.created_at DESC`;
 
   return db.query(queryString, queryParams).then((result) => {
-    if (result.rows.length === 0) {
-      return Promise.reject({ status: 400, msg: 'Bad request: query does not exist' })
-    }
+
     return result.rows;
   });
 };
