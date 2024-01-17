@@ -76,11 +76,10 @@ exports.postCommentToArticle = (article_id, body) => {
       return Promise.reject({ status: 404, msg: 'username not found' })
     }
   }).then(() => {
-    const currentTimestamp = new Date().toISOString();
-    const commentValues = [body.body, body.username, article_id, 0, currentTimestamp]
+    const commentValues = [body.body, body.username, article_id]
     return db.query(`INSERT INTO comments
-    (body, author, article_id, votes, created_at)
-    VALUES ($1, $2, $3, $4, $5)
+    (body, author, article_id)
+    VALUES ($1, $2, $3)
     RETURNING *`, commentValues).then((comment) => {
       return comment.rows[0].body
   })
