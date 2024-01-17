@@ -57,7 +57,7 @@ exports.retrieveCommentsByArticleId = (req, res, next) => {
 exports.postNewComment = (req, res, next) => {
     const { article_id } = req.params
     const { body } = req
-
+    console.log(body)
     postCommentToArticle(article_id, body).then((comment) => {
         res.status(201).send({ comment })
     })
