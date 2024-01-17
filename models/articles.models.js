@@ -2,7 +2,21 @@ const db = require("../db/connection");
 
 exports.fetchArticleById = (article_id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .query(`SELECT
+    articles.article_id,
+    articles.author,
+    articles.title,
+    articles.body,
+    articles.created_at,
+    articles.topic,
+    articles.article_img_url,
+    articles.votes,
+    COUNT(comments.article_id)::INTEGER AS comment_count
+    FROM articles
+    FULL JOIN comments 
+    ON articles.article_id = comments.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id`, [article_id])
     .then((article) => {
       if (article.rows.length === 0) {
         return Promise.reject({
@@ -14,10 +28,6 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 exports.fetchAllArticles = (topic) => {
-  // const validTopicQueries = ['mitch', 'cats', 'paper'];
-  // if (!validTopicQueries.includes(topic)) {
-  //   return Promise.reject({ status: 400, msg: 'Bad request' });
-  // }
 
   let queryString = `SELECT
   articles.article_id,
