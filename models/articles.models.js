@@ -67,12 +67,23 @@ exports.fetchCommentByArticleId = (article_id) => {
 }
 
 exports.postCommentToArticle = (article_id, body) => {
-  const commentValues = [body.body, body.author, article_id, 0, "2020-07-18T11:23:00.000Z"]
-  return db.query(`INSERT INTO comments
-  (body, author, article_id, votes, created_at)
-  VALUES ($1, $2, $3, $4, $5)
-  RETURNING *`, commentValues).then((comment) => {
-    return comment.rows[0].body
+  if (body.body === '') {
+    return Promise.reject({ status: 400, msg: 'Bad request: empty body' })
+  }
+  return db.query(`SELECT * FROM users WHERE username = $1`, 
+  [body.username]).then((response) => {
+    if (response.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: 'username not found' })
+    }
+  }).then(() => {
+    const currentTimestamp = new Date().toISOString();
+    const commentValues = [body.body, body.username, article_id, 0, currentTimestamp]
+    return db.query(`INSERT INTO comments
+    (body, author, article_id, votes, created_at)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *`, commentValues).then((comment) => {
+      return comment.rows[0].body
+  })
   })
 
 }

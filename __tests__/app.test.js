@@ -77,7 +77,6 @@ describe('GET /api/articles/:article_id/comments', () => {
         .expect(200)
         .then(({body}) => {
             const { comments } = body;
-
             const expectedOutput = [
                 {
                     comment_id: 11,
@@ -131,9 +130,8 @@ describe('POST /api/articles/:article_id/comments', () => {
     test('201: inserts a new comment into the specified article, and returns that newly added comment', () => {
         const commentToAdd = {
             body: 'this is a bunch of nonsense',
-            author: "butter_bridge"
+            username: "butter_bridge"
         }
-
         const addedComment = {
             body: 'this is a bunch of nonsense'
         }
@@ -149,9 +147,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     test('400: when given an article_id value which is not a number, return a bad request error message', () => {
         const commentToAdd = {
             body: 'this is a bunch of nonsense',
-            author: "butter_bridge",
-            votes: 0,
-            created_at: "2020-10-16T11:28:00.000Z"
+            username: "butter_bridge"
         }
         return request(app)
         .post('/api/articles/four/comments') 
@@ -164,9 +160,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     test('404: when given an article_id which does not exist in the database, return an ID does not exist message', () => {
         const commentToAdd = {
             body: 'this is a bunch of nonsense',
-            author: "butter_bridge",
-            votes: 0,
-            created_at: "2020-10-16T11:28:00.000Z"
+            username: "butter_bridge"
         }
         return request(app)
         .post('/api/articles/876/comments') 
@@ -174,6 +168,32 @@ describe('POST /api/articles/:article_id/comments', () => {
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe('ID not found');
+        })
+    })
+    test('400: when given an body value which is empty, return a bad request error message', () => {
+        const commentToAdd = {
+            body: '',
+            username: "butter_bridge"
+        }
+        return request(app)
+        .post('/api/articles/4/comments') 
+        .send(commentToAdd) 
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request: empty body');
+        })
+    })
+    test('404: when given a user that doesnt exist in the database, return a not found error', () => {
+        const commentToAdd = {
+            body: 'elo elo elo',
+            username: "sminksmonk564"
+        }
+        return request(app)
+        .post('/api/articles/4/comments') 
+        .send(commentToAdd) 
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('username not found');
         })
     })
 })
