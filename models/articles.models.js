@@ -27,13 +27,23 @@ exports.fetchArticleById = (article_id) => {
       return article.rows[0];
     });
 };
-exports.fetchAllArticles = (topic) => {
+exports.fetchAllArticles = (topic, order='DESC', sort_by='created_at') => {
+  const validOrderQueries = ['ASC', 'asc', 'DESC', 'desc']
+  if (!validOrderQueries.includes(order)) {
+      return Promise.reject({ status: 400, msg: 'Bad request: Invalid order query'})
+  }
+
+  const validSortQueries = ['title', 'created_at', 'article_id', 'topic', 'author', 'body', 'votes', 'article_img_url', 'comment_count']
+  if (!validSortQueries.includes(sort_by)) {
+      return Promise.reject({ status: 400, msg: 'Invalid sort-by query'})
+  }
 
   let queryString = `SELECT
   articles.article_id,
   articles.author,
   articles.title,
   articles.topic,
+  articles.body,
   articles.created_at,
   articles.article_img_url,
   articles.votes,
@@ -49,8 +59,13 @@ exports.fetchAllArticles = (topic) => {
     queryParams.push(topic);
   }
 
-  queryString += ` GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC`;
+  if (sort_by === 'comment_count') {
+    queryString += ` GROUP BY articles.article_id
+    ORDER BY COUNT(comments.article_id) ${order.toUpperCase()}`;
+  } else {
+    queryString += ` GROUP BY articles.article_id
+    ORDER BY articles.${sort_by} ${order.toUpperCase()}`;
+  }
 
   return db.query(queryString, queryParams).then((result) => {
 

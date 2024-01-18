@@ -16,7 +16,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles as objects",
-    "queries": ["topic"],
+    "queries": ["topic", "order", "sort_by"],
     "exampleResponse": {
       "article_id": 11,
       "author": "icellusedkars",

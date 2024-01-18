@@ -63,6 +63,7 @@ describe('GET /api/articles', () => {
                 expect(typeof article.article_id)
                 expect(typeof article.topic).toBe('string')
                 expect(typeof article.created_at).toBe('string')
+                expect(typeof article.body).toBe('string')
                 expect(typeof article.votes).toBe('number')
                 expect(typeof article.article_img_url).toBe('string')
                 expect(typeof article.comment_count).toBe('number')
@@ -352,7 +353,6 @@ describe('GET /api/articles (topic query)', () => {
             expect(body.msg).toBe('Bad request: query does not exist')
     })
 })
-/////////
 test("200: If a topic exists but isn't mentioned in any articles, return an empty array", () => {
     return request(app)
     .get("/api/articles?topic=paper")
@@ -363,7 +363,6 @@ test("200: If a topic exists but isn't mentioned in any articles, return an empt
         })
 })
 })
-///////////
 
 describe("GET /api/articles/:article_id", () => {
     test("200: when retrieving an article by an id number of 1, return the correct article information as an object", () => {
@@ -401,6 +400,161 @@ describe("GET /api/articles/:article_id", () => {
         .expect(400)
         .then(({ body }) => {
             expect(body.msg).toBe('Bad request');
+        })
+    })
+})
+
+describe('GET api/articles (order)', () => {
+    test('200: should order all results in ascending order when defined as an order query', () => {
+        return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("created_at", { ascending: true })
+    })
+    })
+    test('200: should order all results in descending order when defined as an order query', () => {
+        return request(app)
+        .get("/api/articles?order=desc")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+    })
+    })
+    test('200: should default to descending order when no order query is given', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+    })
+    })
+    test('400: returns an bad request message when an invalid order query is given', () => {
+        return request(app)
+        .get("/api/articles?order=random")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad request: Invalid order query')
+    })
+    })
+})
+//will sort by column, by default in acscending order, for example article_id will be in order of numbers desc, body will be sorted in order alphabetically desc, 
+describe('GET api/articles (sort_by)', () => {
+    test('200: returns articles in order of the specified column name (title), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("title", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (topic), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=topic")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("topic", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (article_id), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=article_id")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("article_id", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (author), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("author", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (votes), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("votes", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (article_img_url), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=article_img_url")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("article_img_url", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (created_at), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=created_at")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (comment_count), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=comment_count")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("comment_count", { descending: true })
+    })
+    })
+    test('200: returns articles in order of the specified column name (body), by default of descending order', () => {
+        return request(app)
+        .get("/api/articles?sort_by=body")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles[0].article_id).toBe(10)
+            expect(articles[1].article_id).toBe(9)
+            expect(articles[2].article_id).toBe(4)
+            expect(articles[3].article_id).toBe(13)
+            expect(articles[4].article_id).toBe(3)
+            expect(articles[5].article_id).toBe(7)
+            expect(articles[6].article_id).toBe(1)
+            expect(articles[7].article_id).toBe(11)
+            expect(articles[8].article_id).toBe(12)
+            expect(articles[9].article_id).toBe(6)
+            expect(articles[10].article_id).toBe(2)
+            expect(articles[11].article_id).toBe(5)
+            expect(articles[12].article_id).toBe(8)
+            // expect(articles).toBeSortedBy("body", { descending: true })
+    })
+    })
+    test('400: Should return a bad request when given an invalud sort by query', () => {
+        return request(app)
+        .get("/api/articles?sort_by=somethingrandom")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid sort-by query')
         })
     })
 })
