@@ -526,6 +526,16 @@ describe('GET api/articles (sort_by)', () => {
             expect(articles).toBeSortedBy("comment_count", { descending: true })
     })
     })
+    test('200: allow for multiple queires in a single enpath and reorder the data accordingly', () => {
+        return request(app)
+        .get("/api/articles?sort_by=comment_count&order=asc")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSortedBy("comment_count", { ascending: true })
+    })
+    })
     test('200: returns articles in order of the specified column name (body), by default of descending order', () => {
         return request(app)
         .get("/api/articles?sort_by=body")

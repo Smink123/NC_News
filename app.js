@@ -1,7 +1,10 @@
 const express = require("express");
+
+const articleRouter = require("./routers/articles.router")
+
 const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment, patchArticleById } = require("./controllers/articles.controllers")
+// const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment, patchArticleById } = require("./controllers/articles.controllers")
 const { deleteCommentById } = require("./controllers/comments.controllers")
 const { retrieveUsers } = require("./controllers/users.controllers")
 
@@ -9,19 +12,22 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api/topics", retrieveTopics);
+app.use("/api/articles", articleRouter);
+// app.get("/api/articles/:article_id", retrieveArticleById) //<<<<<<
+
+// app.get("/api/articles", retrieveAllArticles) //<<<<<<
+
+// app.get("/api/articles/:article_id/comments", retrieveCommentsByArticleId) //<<<<<<
+
+// app.post("/api/articles/:article_id/comments", postNewComment) //<<<<<<
+
+// app.patch("/api/articles/:article_id", patchArticleById) //<<<<<<
+
 
 app.get("/api", retrieveAllPathInfo)
 
-app.get("/api/articles/:article_id", retrieveArticleById)
+app.get("/api/topics", retrieveTopics);
 
-app.get("/api/articles", retrieveAllArticles)
-
-app.get("/api/articles/:article_id/comments", retrieveCommentsByArticleId)
-
-app.post("/api/articles/:article_id/comments", postNewComment)
-
-app.patch("/api/articles/:article_id", patchArticleById)
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
 
