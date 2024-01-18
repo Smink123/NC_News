@@ -104,5 +104,14 @@
         "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
       }
     ]
+  },
+  "GET /api/users/:username": {
+    "description": "returns an object of the user who has been specified in the endpoint",
+    "queries": [],
+    "exampleResponse": {
+      "username": "lurker",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "name": "do_nothing"
+  }
   }
 }

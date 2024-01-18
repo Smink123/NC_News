@@ -568,3 +568,29 @@ describe('GET api/articles (sort_by)', () => {
         })
     })
 })
+
+describe("GET /api/users/:username", () => {
+    test("200: returns the user object specifided by the username in the endpoint", () => {
+
+        const expectedOutput = {
+            username: "lurker",
+            avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            name: "do_nothing"
+        }
+        return request(app)
+        .get("/api/users/lurker")
+        .expect(200)
+        .then(({ body }) => {
+            const { user } = body
+            expect(user).toEqual(expectedOutput)
+        })
+    })
+    test("404: returns an error message when the username has not been found within the database", () => {
+        return request(app)
+        .get("/api/users/mrbojanglezzzzz")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toEqual('username not found')
+        })
+    })
+})
