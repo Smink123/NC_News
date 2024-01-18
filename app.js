@@ -3,27 +3,19 @@ const express = require("express");
 const articleRouter = require("./routers/articles.router")
 const userRouter = require("./routers/users.router")
 const topicsRouter = require("./routers/topics.router")
-
-// const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
-const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-const { deleteCommentById } = require("./controllers/comments.controllers")
+const commentRouter = require("./routers/comments.router")
+const apiRouter = require("./routers/api.router")
 
 const app = express();
 
 app.use(express.json());
 
+
 app.use("/api/articles", articleRouter);
 app.use("/api/users", userRouter)
 app.use("/api/topics", topicsRouter)
-
-
-app.get("/api", retrieveAllPathInfo)
-
-// app.get("/api/topics", retrieveTopics); ////////
-
-
-app.delete("/api/comments/:comment_id", deleteCommentById)
-
+app.use("/api/comments", commentRouter)
+app.use("/api", apiRouter)
 
 
 app.all("*", (req, res, next) => {
