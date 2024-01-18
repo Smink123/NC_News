@@ -2,8 +2,9 @@ const express = require("express");
 
 const articleRouter = require("./routers/articles.router")
 const userRouter = require("./routers/users.router")
+const topicsRouter = require("./routers/topics.router")
 
-const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
+// const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
 const { deleteCommentById } = require("./controllers/comments.controllers")
 
@@ -13,18 +14,21 @@ app.use(express.json());
 
 app.use("/api/articles", articleRouter);
 app.use("/api/users", userRouter)
+app.use("/api/topics", topicsRouter)
 
 
 app.get("/api", retrieveAllPathInfo)
 
-app.get("/api/topics", retrieveTopics);
+// app.get("/api/topics", retrieveTopics); ////////
 
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
 
 
 
-app.all("*", incorrectPathNames);
+app.all("*", (req, res, next) => {
+    res.status(404).send({ msg: "Invalid endpoint" })
+})
 
 app.use((err, req, res, next) => {
     if(err.status === 400){
