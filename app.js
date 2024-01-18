@@ -1,27 +1,18 @@
 const express = require("express");
 
 const articleRouter = require("./routers/articles.router")
+const userRouter = require("./routers/users.router")
 
 const { retrieveTopics, incorrectPathNames } = require("./controllers/topics.controllers");
 const { retrieveAllPathInfo } = require("./controllers/api.controllers")
-// const { retrieveArticleById, retrieveAllArticles, retrieveCommentsByArticleId, postNewComment, patchArticleById } = require("./controllers/articles.controllers")
 const { deleteCommentById } = require("./controllers/comments.controllers")
-const { retrieveUsers } = require("./controllers/users.controllers")
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/api/articles", articleRouter);
-// app.get("/api/articles/:article_id", retrieveArticleById) //<<<<<<
-
-// app.get("/api/articles", retrieveAllArticles) //<<<<<<
-
-// app.get("/api/articles/:article_id/comments", retrieveCommentsByArticleId) //<<<<<<
-
-// app.post("/api/articles/:article_id/comments", postNewComment) //<<<<<<
-
-// app.patch("/api/articles/:article_id", patchArticleById) //<<<<<<
+app.use("/api/users", userRouter)
 
 
 app.get("/api", retrieveAllPathInfo)
@@ -31,7 +22,6 @@ app.get("/api/topics", retrieveTopics);
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
 
-app.get("/api/users", retrieveUsers);
 
 
 app.all("*", incorrectPathNames);
