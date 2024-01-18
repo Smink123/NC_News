@@ -115,3 +115,33 @@ exports.editArticleById = (article_id, inc_votes) => {
     return article.rows[0]
   })
 }
+
+exports.createaNewArticle = (body) => {
+  const articleValues = [body.title, body.topic, body.author, body.body, body.article_img_url]
+
+  return db.query(`INSERT INTO articles
+  (title, topic, author, body, article_img_url)
+  VALUES ($1, $2, $3, $4, $5)
+  RETURNING article_id`, articleValues).then((article) => {
+    const newArticleId = article.rows[0].article_id
+
+    return db.query(`SELECT
+    articles.article_id,
+    articles.author,
+    articles.title,
+    articles.body,
+    articles.article_img_url,
+    articles.topic,
+    articles.created_at,
+    articles.votes,
+    COUNT(comments.article_id)::INTEGER AS comment_count
+    FROM articles
+    FULL JOIN
+    comments ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+    GROUP BY articles.article_id`, [newArticleId]).then((result) => {
+      return result.rows[0]
+    })
+  })
+
+}

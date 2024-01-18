@@ -1,4 +1,4 @@
-const { fetchArticleById, fetchAllArticles, fetchCommentByArticleId, postCommentToArticle, editArticleById } = require("../models/articles.models")
+const { fetchArticleById, fetchAllArticles, fetchCommentByArticleId, postCommentToArticle, editArticleById, createaNewArticle } = require("../models/articles.models")
 const { checkArticlesExists } = require("../db/check-article-exists")
 const { checkTopicExists } = require("../db/check-topic-exists")
 
@@ -73,5 +73,12 @@ exports.patchArticleById = (req, res, next) => {
     })
     .catch((err) => {
         next(err)
+    })
+}
+
+exports.postaNewArticle = (req, res, next) => {
+    const { body } = req
+    createaNewArticle(body).then((article) => {
+        res.status(201).send({ article })
     })
 }
