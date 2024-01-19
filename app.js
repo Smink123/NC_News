@@ -69,7 +69,6 @@ app.use((err, req, res, next) => {
 })
 
 
-//23505
 
 
 module.exports = app;

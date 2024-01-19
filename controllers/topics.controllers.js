@@ -12,7 +12,6 @@ exports.retrieveTopics = (req, res, next) => {
 exports.postNewTopic = (req, res, next) => {
     const { body } = req
     addNewTopic(body).then((topic) => {
-        console.log(topic)
         res.status(201).send({ topic })
     })
     .catch((err) => {

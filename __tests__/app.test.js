@@ -138,7 +138,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       body: "this is a bunch of nonsense",
     };
     return request(app)
-      .post("/api/articles/4/comments")
+      .post("/api/articles/11/comments")
       .send(commentToAdd)
       .expect(201)
       .then(({ body }) => {
@@ -855,3 +855,30 @@ describe("POST /api/topics", () => {
       });
   });
 });
+
+describe("DELETE: /api/articles/:article_id", () => {
+  test("204: delete an article by its article id from the database and return an empty object", () => {
+    return request(app)
+    .delete("/api/articles/11")
+    .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  })
+    test("404: when given a comment_id as a number which is not included in the database, return an error message", () => {
+    return request(app)
+      .delete("/api/articles/598")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID not found");
+      });
+  });
+    test("400: when given an invalid id that is not a number, send back a bad request message", () => {
+    return request(app)
+      .delete("/api/articles/onehundred")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+    })
+})

@@ -147,5 +147,10 @@
     "exampleResponse": { 
       "slug": "chocolate", 
       "description": "Everyone loves it" }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes an article from the database, as well as the comments related to the article's id number",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
