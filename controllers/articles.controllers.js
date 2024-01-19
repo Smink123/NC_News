@@ -81,4 +81,7 @@ exports.postaNewArticle = (req, res, next) => {
     createaNewArticle(body).then((article) => {
         res.status(201).send({ article })
     })
+    .catch((err) => {
+        next(err)
+    })
 }

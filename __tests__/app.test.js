@@ -674,103 +674,114 @@ describe("PATCH /api/comments/:comment_id", () => {
       });
   });
   test("400: when given an invalid key that is not inc_votes, return a bad request message", () => {
-    const commentUpvote = { update: 1 }
+    const commentUpvote = { update: 1 };
     return request(app)
-    .patch("/api/comments/2")
-    .send(commentUpvote)
-    .expect(400)
-    .then(({ body }) => {
-        expect(body.msg).toBe("Bad request")
-    })
-})
+      .patch("/api/comments/2")
+      .send(commentUpvote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
 
 describe("POST /api/articles", () => {
-    test("201: inserts a new article into the database, returning an object with all of the new article information", () => {
-        const articleToAdd = {
-            author: "icellusedkars",
-            title: "Cats and hats. Thoughts?",
-            body: "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
-            topic: "cats",
-            article_img_url: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        }
+  test("201: inserts a new article into the database, returning an object with all of the new article information", () => {
+    const articleToAdd = {
+      author: "icellusedkars",
+      title: "Cats and hats. Thoughts?",
+      body: "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
+      topic: "cats",
+      article_img_url:
+        "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    };
 
-        return request(app)
+    return request(app)
+      .post("/api/articles")
+      .send(articleToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article.votes).toBe(0);
+        expect(article.article_id).toBe(14);
+        expect(typeof article.created_at).toBe("string");
+        expect(article.article_img_url).toBe(
+          "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        );
+        expect(article.topic).toBe("cats");
+        expect(article.body).toBe(
+          "This cat is not wearing a very big hat. Or even a small one. And that makes me sad."
+        );
+        expect(article.title).toBe("Cats and hats. Thoughts?");
+        expect(article.author).toBe("icellusedkars");
+        expect(article.comment_count).toBe(0);
+
+        expect(Object.keys(article).length).toBe(9);
+      });
+  });
+  test("400: when given an body, author, title or topic value which is empty, return a bad request error message", () => {
+    const articleToAdd = {
+      author: "",
+      title: "",
+      body: "",
+      topic: "",
+      article_img_url: "",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(articleToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request: empty input");
+      });
+  });
+  test("400: when any of the input keys are missing, throw a bad response error", () => {
+    const articleToAdd = {
+      title: "This is so random but...",
+      body: "hahahaha!"
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(articleToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("200: when any of the keys are incorrectly named, return a bad request error", () => {
+    const articleToAdd = {
+      username: "icellusedkars",
+      title: "Cats and hats. Thoughts?",
+      body: "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
+      topic: "cats",
+      article_img_url:
+        "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(articleToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+    })
+    test("201: inserts a new article into the database, even when an img url has not been provided returning an object with all of the new article information", () => {
+      const articleToAdd = {
+        author: "icellusedkars",
+        title: "Cats and hats. Thoughts?",
+        body: "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
+        topic: "cats",
+        article_img_url: ''
+      };
+      return request(app)
         .post("/api/articles")
         .send(articleToAdd)
         .expect(201)
-        .then(({body}) => {
-            const { article } = body
-            expect(article.votes).toBe(0)
-            expect(article.article_id).toBe(14)
-            expect(typeof article.created_at).toBe("string")
-            expect(article.article_img_url).toBe("https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
-            expect(article.topic).toBe("cats")
-            expect(article.body).toBe("This cat is not wearing a very big hat. Or even a small one. And that makes me sad.")
-            expect(article.title).toBe("Cats and hats. Thoughts?")
-            expect(article.author).toBe("icellusedkars")
-            expect(article.comment_count).toBe(0)
-
-            expect(Object.keys(article).length).toBe(9)
-            console.log(article)
-        })
-    })
-})
-
-
-
-
-
-//     test("400: when given an article_id value which is not a number, return a bad request error message", () => {
-//       const commentToAdd = {
-//         body: "this is a bunch of nonsense",
-//         username: "butter_bridge",
-//       };
-//       return request(app)
-//         .post("/api/articles/four/comments")
-//         .send(commentToAdd)
-//         .expect(400)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("Bad request");
-//         });
-//     });
-//     test("404: when given an article_id which does not exist in the database, return an ID does not exist message", () => {
-//       const commentToAdd = {
-//         body: "this is a bunch of nonsense",
-//         username: "butter_bridge",
-//       };
-//       return request(app)
-//         .post("/api/articles/876/comments")
-//         .send(commentToAdd)
-//         .expect(404)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("ID not found");
-//         });
-//     });
-//     test("400: when given an body value which is empty, return a bad request error message", () => {
-//       const commentToAdd = {
-//         body: "",
-//         username: "butter_bridge",
-//       };
-//       return request(app)
-//         .post("/api/articles/4/comments")
-//         .send(commentToAdd)
-//         .expect(400)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("Bad request: empty body");
-//         });
-//     });
-//     test("404: when given a user that doesnt exist in the database, return a not found error", () => {
-//       const commentToAdd = {
-//         body: "elo elo elo",
-//         username: "sminksmonk564",
-//       };
-//       return request(app)
-//         .post("/api/articles/4/comments")
-//         .send(commentToAdd)
-//         .expect(404)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("username not found");
-//         });
-//     });
-//   });
+        .then(({ body }) => {
+          const { article } = body;
+          console.log(article)
+          expect(Object.keys(article).length).toBe(9);
+          expect(article.article_img_url).toBe('https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700')
+        });
+    });
+});

@@ -117,7 +117,17 @@ exports.editArticleById = (article_id, inc_votes) => {
 }
 
 exports.createaNewArticle = (body) => {
-  const articleValues = [body.title, body.topic, body.author, body.body, body.article_img_url]
+
+  if (body.body === '' || body.title === '' || body.author == '' || body.topic == '') {
+    return Promise.reject({ status: 400, msg: 'Bad request: empty input' })
+  }
+  const articleValues = [body.title, body.topic, body.author, body.body]
+
+  if (body.article_img_url === '') {
+    articleValues.push('https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700')
+  } else {
+    articleValues.push(body.article_img_url)
+  }
 
   return db.query(`INSERT INTO articles
   (title, topic, author, body, article_img_url)
@@ -140,6 +150,7 @@ exports.createaNewArticle = (body) => {
     comments ON articles.article_id = comments.article_id
   WHERE articles.article_id = $1
     GROUP BY articles.article_id`, [newArticleId]).then((result) => {
+
       return result.rows[0]
     })
   })
