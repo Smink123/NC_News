@@ -27,7 +27,9 @@ exports.fetchArticleById = (article_id) => {
       return article.rows[0];
     });
 };
-exports.fetchAllArticles = (topic, order='DESC', sort_by='created_at') => {
+
+exports.fetchAllArticles = (topic, order='DESC', sort_by='created_at', limit = 10, p = 1) => {
+  console.log(limit)
   const validOrderQueries = ['ASC', 'asc', 'DESC', 'desc']
   if (!validOrderQueries.includes(order)) {
       return Promise.reject({ status: 400, msg: 'Bad request: Invalid order query'})
@@ -61,14 +63,26 @@ exports.fetchAllArticles = (topic, order='DESC', sort_by='created_at') => {
 
   if (sort_by === 'comment_count') {
     queryString += ` GROUP BY articles.article_id
-    ORDER BY COUNT(comments.article_id) ${order.toUpperCase()}`;
+    ORDER BY COUNT(comments.article_id) ${order.toUpperCase()}
+    LIMIT ${limit} OFFSET ${(p-1) * limit}
+    
+    `;
   } else {
     queryString += ` GROUP BY articles.article_id
-    ORDER BY articles.${sort_by} ${order.toUpperCase()}`;
+    ORDER BY articles.${sort_by} ${order.toUpperCase()}
+    LIMIT ${limit} OFFSET ${(p-1) * limit}
+    `;
   }
 
   return db.query(queryString, queryParams).then((result) => {
+    // console.log('total results = ', result.rows.length)
+    // console.log('p (specifies the particular page to start search on) - yet to add as a query')
+    // console.log('')
 
+    // if (limit) {
+    //   const refinedArray = result.rows.slice(0, limit);
+    //   return refinedArray
+    // }
     return result.rows;
   });
 };
