@@ -125,5 +125,27 @@
       "created_at": "2020-10-31T03:03:00.000Z",
       "votes": -36
     }
+  },
+  "POST /api/articles": {
+    "description": "posts a new article to the database and returns the newly added article as an object with its key + value information",
+    "queries": [],
+    "exampleResponse": {
+      "article_id": 17,
+      "author": "icellusedkars",
+      "title": "Cats and hats. Thoughts?",
+      "body": "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
+      "article_img_url": "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+      "topic": "cats",
+      "created_at": "2024-01-19T11:35:45.256Z",
+      "votes": 0,
+      "comment_count": 0
+    }
+  },
+  "POST /api/topics": {
+    "description": "posts a new topic to the database and returns the newly added topic as an object with its key + value information",
+    "queries": [],
+    "exampleResponse": { 
+      "slug": "chocolate", 
+      "description": "Everyone loves it" }
   }
 }

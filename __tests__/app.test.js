@@ -719,6 +719,26 @@ describe("POST /api/articles", () => {
         expect(Object.keys(article).length).toBe(9);
       });
   });
+  test("201: inserts a new article into the database, even when an img url has not been provided returning an object with all of the new article information", () => {
+    const articleToAdd = {
+      author: "icellusedkars",
+      title: "Cats and hats second time around. Thoughts?",
+      body: "This cat is now wearing a very big hat. Which always makes me very happy.",
+      topic: "cats",
+      article_img_url: "",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(articleToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(Object.keys(article).length).toBe(9);
+        expect(article.article_img_url).toBe(
+          "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
+        );
+      });
+  });
   test("400: when given an body, author, title or topic value which is empty, return a bad request error message", () => {
     const articleToAdd = {
       author: "",
@@ -738,7 +758,7 @@ describe("POST /api/articles", () => {
   test("400: when any of the input keys are missing, throw a bad response error", () => {
     const articleToAdd = {
       title: "This is so random but...",
-      body: "hahahaha!"
+      body: "hahahaha!",
     };
     return request(app)
       .post("/api/articles")
@@ -748,7 +768,7 @@ describe("POST /api/articles", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-  test("200: when any of the keys are incorrectly named, return a bad request error", () => {
+  test("400: when any of the keys are incorrectly named, return a bad request error", () => {
     const articleToAdd = {
       username: "icellusedkars",
       title: "Cats and hats. Thoughts?",
@@ -764,24 +784,74 @@ describe("POST /api/articles", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
       });
-    })
-    test("201: inserts a new article into the database, even when an img url has not been provided returning an object with all of the new article information", () => {
-      const articleToAdd = {
-        author: "icellusedkars",
-        title: "Cats and hats. Thoughts?",
-        body: "This cat is not wearing a very big hat. Or even a small one. And that makes me sad.",
-        topic: "cats",
-        article_img_url: ''
+  });
+});
+
+describe("POST /api/topics", () => {
+  test("201: inserts a new topic into the database, returning an object with all of the new topic information", () => {
+    const topicToAdd = {
+      description: "Everyone loves it",
+      slug: "chocolate",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(topicToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        const { topic } = body;
+        expect(topic).toEqual(topicToAdd);
+      });
+  });
+    test("400: when given a description or slug value which is empty, return a bad request error message", () => {
+      const topicToAdd = {
+        description: "",
+        slug: "weather",
       };
-      return request(app)
-        .post("/api/articles")
-        .send(articleToAdd)
-        .expect(201)
-        .then(({ body }) => {
-          const { article } = body;
-          console.log(article)
-          expect(Object.keys(article).length).toBe(9);
-          expect(article.article_img_url).toBe('https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700')
-        });
+    return request(app)
+      .post("/api/topics")
+      .send(topicToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request: empty input");
+      });
+  });
+  test("400: when given a slug value which already exists in the topics database, return an error message", () => {
+    const topicToAdd = {
+      description: "they are totes adorbs",
+      slug: "cats",
+    };
+  return request(app)
+    .post("/api/topics")
+    .send(topicToAdd)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Key (slug)=(cats) already exists.");
     });
+});
+  test("400: when any of the input keys are missing, throw a bad response error", () => {
+    const topicToAdd = {
+      slug: "vehicles"
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(topicToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+    test("400: when any of the keys are incorrectly named, return a bad request error", () => {
+      const topicToAdd = {
+        topic_about: "they are totes adorbs",
+        topic_name: "cats",
+      };
+    return request(app)
+      .post("/api/topics")
+      .send(topicToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
