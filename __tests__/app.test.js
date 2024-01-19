@@ -932,11 +932,6 @@ describe("GET /api/articles (pagination)", () => {
 // So, you firstly deduct 1 from whatever value p is. Then, to get the offset, you multiply that value against whatever the limit is
 
 
-//FIRST TASK - CLEAN UP SQL INJECTION ON MODELS
-//THEN ERROR HANDLING
-
-
-
 
 // describe("GET /api/articles (topic query)", () => {
 //   test("200: Will return a filtered set of results based on the particular topic query given", () => {
