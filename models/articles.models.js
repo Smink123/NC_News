@@ -29,60 +29,6 @@ exports.fetchArticleById = (article_id) => {
 };
 
 
-// exports.fetchAllArticles = (topic, order = 'DESC', sort_by = 'created_at', limit = 10, p = 1) => {
-
-//   const validOrderQueries = ['ASC', 'asc', 'DESC', 'desc'];
-//   if (!validOrderQueries.includes(order)) {
-//     return Promise.reject({ status: 400, msg: 'Bad request: Invalid order query' });
-//   }
-
-//   const validSortQueries = ['title', 'created_at', 'article_id', 'topic', 'author', 'body', 'votes', 'article_img_url', 'comment_count'];
-//   if (!validSortQueries.includes(sort_by)) {
-//     return Promise.reject({ status: 400, msg: 'Invalid sort-by query' });
-//   }
-
-//   let queryString = `SELECT
-//     articles.article_id,
-//     articles.author,
-//     articles.title,
-//     articles.topic,
-//     articles.body,
-//     articles.created_at,
-//     articles.article_img_url,
-//     articles.votes,
-//     COUNT(comments.article_id)::INTEGER AS comment_count
-//     FROM articles
-//     FULL JOIN
-//     comments ON articles.article_id = comments.article_id`;
-
-//   const queryParams = [];
-
-//   if (topic) {
-//     queryString += ` WHERE articles.topic = $1`;
-//     queryParams.push(topic);
-//   }
-
-//   if (sort_by === 'comment_count') {
-//     queryString += ` GROUP BY articles.article_id
-//     ORDER BY COUNT(comments.article_id) ${order.toUpperCase()}
-//     LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
-//   } else {
-//     queryString += ` GROUP BY articles.article_id
-//     ORDER BY articles.${sort_by} ${order.toUpperCase()}
-//     LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
-//   }
-
-//   queryParams.push(limit);
-//   queryParams.push((p - 1) * limit);
-
-//   return db.query(queryString, queryParams).then((result) => {
-//     return result.rows;
-//   });
-// };
-
-
-
-
 
 
 exports.fetchAllArticles = (topic, order = 'DESC', sort_by = 'created_at', limit = 10, p = 1) => {
@@ -173,13 +119,14 @@ exports.fetchAllArticles = (topic, order = 'DESC', sort_by = 'created_at', limit
 
 
 
+exports.fetchCommentByArticleId = (article_id, limit = 10, p = 1) => {
 
+  const pageDivision = (p - 1) * limit
 
-
-exports.fetchCommentByArticleId = (article_id) => {
   return db.query(`SELECT * FROM comments 
   WHERE article_id = $1
-  ORDER BY created_at DESC`, [article_id]).then((comments) => {
+  ORDER BY created_at DESC
+  LIMIT $2 OFFSET $3`, [article_id, limit, pageDivision]).then((comments) => {
     return comments.rows
   })
 }

@@ -902,7 +902,7 @@ describe("GET /api/articles (pagination)", () => {
         expect(articles.total_count).toBe(14)
       })
   })
-  test('200: When given a limit query and a page query of 0, limit the amount of articles to be returned in the response at the specified page number - in this case the first 5 responses', () => {
+  test('200: When given a limit query and a page query of 1, limit the amount of articles to be returned in the response at the specified page number - in this case the first 5 responses', () => {
     return request(app)
     .get("/api/articles?limit=10&p=1")
     .expect(200)
@@ -955,7 +955,6 @@ describe("GET /api/articles (pagination)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log(articles)
         expect(articles.result.length).toBe(3);
         expect(articles.result).toBeSortedBy("article_id", { ascending: true });
       });
@@ -966,7 +965,6 @@ describe("GET /api/articles (pagination)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log(articles)
         expect(articles.result.length).toBe(3);
         expect(articles.total_count).toBe(14)
         expect(articles.result).toBeSortedBy("article_id", { ascending: true });
@@ -978,9 +976,66 @@ describe("GET /api/articles (pagination)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log(articles)
         expect(articles.result.length).toBe(1);
         expect(articles.total_count).toBe(11)
       });
   });
+})
+
+
+
+
+describe("GET /api/:articles/comments (pagination)", () => {
+  test('200: When given a limit query, limit the amount of comments per article', () => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=4")
+    .expect(200)
+    .then(({body}) => {
+      const { comments } = body;
+      expect(comments.length).toBe(4)
+    })
+  })
+  test('200: When given a limit query and a page number query, limit the amount of comments per article as well as provide different pages to view results', () => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=4&p=2")
+    .expect(200)
+    .then(({body}) => {
+      const { comments } = body;
+      expect(comments.length).toBe(4)
+    })
+  })
+  test('200: When given a limit query and a page number query, limit the amount of comments per article as well as provide different pages to view results', () => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=4&p=3")
+    .expect(200)
+    .then(({body}) => {
+      const { comments } = body;
+      expect(comments.length).toBe(2)
+    })
+  })
+  test('200: default the limit to 10 when not states as a query', () => {
+    return request(app)
+    .get("/api/articles/1/comments?p=1")
+    .expect(200)
+    .then(({body}) => {
+      const { comments } = body;
+      expect(comments.length).toBe(10)
+    })
+  })
+  test("400: If the page query is given a value that is not a number, return a bad request message", () => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=4&p=one")
+    .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad request')        
+      })
+  })
+  test("400: If the limit query is given a value that is not a number, return a bad request message", () => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=one&p=3")
+    .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad request')        
+      })
+  })
 })

@@ -27,9 +27,7 @@ exports.retrieveAllArticles = (req, res, next) => {
     }
     Promise.all(queries).then((response) => {
         const articles = response[0]
-        // console.log('>>>>>', articles)
-        // console.log('>>>>>>>>>>>>>>>>>>>>', articles.result)
-        // console.log('>>>>>>>>>>>>>>>>>>>>', articles.total_count)
+
         res.status(200).send({ articles })
     })
     .catch((err) => {
@@ -39,8 +37,9 @@ exports.retrieveAllArticles = (req, res, next) => {
 
 exports.retrieveCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params
+    const { limit, p } = req.query
 
-    const fetchQuery = fetchCommentByArticleId(article_id)
+    const fetchQuery = fetchCommentByArticleId(article_id, limit, p)
     const queries = [fetchQuery]
     
     if (article_id) {

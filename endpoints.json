@@ -152,5 +152,47 @@
     "description": "deletes an article from the database, as well as the comments related to the article's id number",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/articles (pagination)": {
+    "description": "uses pagination to stagger results by page numbers and page results size",
+    "queries": ["limit", "p"],
+    "exampleResponse": {
+      "result": [
+        {
+          "article_id": 7,
+          "author": "icellusedkars",
+          "title": "Z",
+          "topic": "mitch",
+          "body": "I was hungry.",
+          "created_at": "2020-01-07T14:08:00.000Z",
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          "votes": 50,
+          "comment_count": 0
+        }
+      ],
+      "total_count": 11
+    }
+  },
+  "GET /api/articles/:article_id/comments (pagination)": {
+    "description": "uses pagination to stagger comments by page numbers and page results size",
+    "queries": ["limit", "p"],
+    "exampleResponse": [
+      {
+        "comment_id": 4,
+        "body":  "I carry a log — yes. Is it funny to you? It is not to me.",
+        "article_id": 1,
+        "author": "icellusedkars",
+        "votes": -100,
+        "created_at": "2020-02-23T12:01:00.000Z"
+      },
+      {
+        "comment_id": 9,
+        "body": "Superficially charming",
+        "article_id": 1,
+        "author": "icellusedkars",
+        "votes": 0,
+        "created_at": "2020-01-01T03:08:00.000Z"
+      }
+    ]
   }
 }
