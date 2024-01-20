@@ -27,6 +27,9 @@ exports.retrieveAllArticles = (req, res, next) => {
     }
     Promise.all(queries).then((response) => {
         const articles = response[0]
+        // console.log('>>>>>', articles)
+        // console.log('>>>>>>>>>>>>>>>>>>>>', articles.result)
+        // console.log('>>>>>>>>>>>>>>>>>>>>', articles.total_count)
         res.status(200).send({ articles })
     })
     .catch((err) => {

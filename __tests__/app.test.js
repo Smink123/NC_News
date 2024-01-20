@@ -56,9 +56,9 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-        articles.forEach((article) => {
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
+        articles.result.forEach((article) => {
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
           expect(typeof article.article_id);
@@ -343,7 +343,7 @@ describe("GET /api/articles (topic query)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        articles.forEach((article) => {
+        articles.result.forEach((article) => {
           expect(article.topic).toBe("mitch");
         });
       });
@@ -362,7 +362,7 @@ describe("GET /api/articles (topic query)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toEqual([]);
+        expect(articles.result).toEqual([]);
       });
   });
 });
@@ -415,8 +415,8 @@ describe("GET api/articles (order)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("created_at", { ascending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("created_at", { ascending: true });
       });
   });
   test("200: should order all results in descending order when defined as an order query", () => {
@@ -425,8 +425,8 @@ describe("GET api/articles (order)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("200: should default to descending order when no order query is given", () => {
@@ -435,8 +435,8 @@ describe("GET api/articles (order)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("400: returns an bad request message when an invalid order query is given", () => {
@@ -456,8 +456,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("title", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("title", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (topic), by default of descending order", () => {
@@ -466,8 +466,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("topic", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("topic", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (article_id), by default of descending order", () => {
@@ -476,8 +476,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("article_id", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("article_id", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (author), by default of descending order", () => {
@@ -486,8 +486,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("author", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("author", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (votes), by default of descending order", () => {
@@ -496,8 +496,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("votes", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("votes", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (article_img_url), by default of descending order", () => {
@@ -506,8 +506,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("article_img_url", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("article_img_url", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (created_at), by default of descending order", () => {
@@ -516,8 +516,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("200: returns articles in order of the specified column name (comment_count), by default of descending order", () => {
@@ -526,8 +526,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("comment_count", { descending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("comment_count", { descending: true });
       });
   });
   test("200: allow for multiple queires in a single enpath and reorder the data accordingly", () => {
@@ -536,8 +536,8 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles).toBeSortedBy("comment_count", { ascending: true });
+        expect(articles.result.length).toBe(10);
+        expect(articles.result).toBeSortedBy("comment_count", { ascending: true });
       });
   });
   test("200: returns articles in order of the specified column name (body), by default of descending order", () => {
@@ -546,17 +546,18 @@ describe("GET api/articles (sort_by)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10);
-        expect(articles[0].article_id).toBe(10);
-        expect(articles[1].article_id).toBe(9);
-        expect(articles[2].article_id).toBe(4);
-        expect(articles[3].article_id).toBe(13);
-        expect(articles[4].article_id).toBe(3);
-        expect(articles[5].article_id).toBe(7);
-        expect(articles[6].article_id).toBe(1);
-        expect(articles[7].article_id).toBe(11);
-        expect(articles[8].article_id).toBe(12);
-        expect(articles[9].article_id).toBe(6);
+        expect(articles.result.length).toBe(10);
+        expect(articles.total_count).toBe(13)
+        expect(articles.result[0].article_id).toBe(10);
+        expect(articles.result[1].article_id).toBe(9);
+        expect(articles.result[2].article_id).toBe(4);
+        expect(articles.result[3].article_id).toBe(13);
+        expect(articles.result[4].article_id).toBe(3);
+        expect(articles.result[5].article_id).toBe(7);
+        expect(articles.result[6].article_id).toBe(1);
+        expect(articles.result[7].article_id).toBe(11);
+        expect(articles.result[8].article_id).toBe(12);
+        expect(articles.result[9].article_id).toBe(6);
         // expect(articles).toBeSortedBy("body", { descending: true })
       });
   });
@@ -887,7 +888,8 @@ describe("GET /api/articles (pagination)", () => {
     .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(5)
+        expect(articles.result.length).toBe(5)
+        expect(articles.total_count).toBe(14)
       })
   })
   test('200: When no limit query has been given, limit the amount of articles to be returned in the response to 10 by default', () => {
@@ -896,7 +898,8 @@ describe("GET /api/articles (pagination)", () => {
     .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(10)
+        expect(articles.result.length).toBe(10)
+        expect(articles.total_count).toBe(14)
       })
   })
   test('200: When given a limit query and a page query of 0, limit the amount of articles to be returned in the response at the specified page number - in this case the first 5 responses', () => {
@@ -906,10 +909,9 @@ describe("GET /api/articles (pagination)", () => {
       .then(({ body }) => {
         const { articles } = body;
         console.log(articles)
-        expect(articles.length).toBe(10)
-        expect(articles[0].article_id).toBe(15)
-        expect(articles[1].article_id).toBe(14)
-        expect(articles[2].article_id).toBe(3)
+        expect(articles.result.length).toBe(10)
+        expect(articles.total_count).toBe(14)
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
       })
   })
   test('200: When given a limit query and a page query of 1, limit the amount of articles to be returned in the response at the specified page number - in this case the 2nd lot of 5 responses', () => {
@@ -918,12 +920,9 @@ describe("GET /api/articles (pagination)", () => {
     .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(5)
-        expect(articles[0].article_id).toBe(13)
-        expect(articles[1].article_id).toBe(12)
-        expect(articles[2].article_id).toBe(5)
-        expect(articles[3].article_id).toBe(1)
-        expect(articles[4].article_id).toBe(9)
+        expect(articles.result.length).toBe(5)
+        expect(articles.total_count).toBe(14)
+        expect(articles.result).toBeSortedBy("created_at", { descending: true });
       })
   })
 })
