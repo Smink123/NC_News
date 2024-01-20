@@ -133,7 +133,6 @@ exports.fetchAllArticles = (topic, order = 'DESC', sort_by = 'created_at', limit
 
   return db.query(queryString, queryParams)
     .then(result => {
-      // const totalCount = result.rowCount;
       const totalData = result.rows;
 
       let queryString = `SELECT
@@ -166,11 +165,12 @@ exports.fetchAllArticles = (topic, order = 'DESC', sort_by = 'created_at', limit
       }
 
       return db.query(queryString, queryParams)
-        .then(dataResult => ({ result: totalData, total_count: dataResult.rowCount }));
-    })
+        .then((dataResult) => {
+          return { result: totalData, total_count: dataResult.rowCount };
+        });
+    });
 };
 
-///////// DOES WHAT I WANT NOW...TIME TO CLEAN UP THE RESPONSE
 
 
 
