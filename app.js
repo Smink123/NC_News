@@ -5,8 +5,11 @@ const userRouter = require("./routers/users.router")
 const topicsRouter = require("./routers/topics.router")
 const commentRouter = require("./routers/comments.router")
 const apiRouter = require("./routers/api.router")
+const cors = require('cors');
+
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
